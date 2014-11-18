@@ -3,13 +3,7 @@ package mobile.forged.com.services;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
-import android.util.Log;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import mobile.forged.com.services.service.clients.ThreadedServiceClient;
 
 public class MainActivity extends Activity {
 

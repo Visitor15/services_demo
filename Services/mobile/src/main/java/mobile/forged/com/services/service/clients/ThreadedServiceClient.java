@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mobile.forged.com.services.ServicesDemo;
+import mobile.forged.com.services.service.Task;
 import mobile.forged.com.services.service.ThreadedService;
 
 /**
@@ -59,17 +59,18 @@ public class ThreadedServiceClient implements ServiceConnection {
         _isBound = false;
     }
 
-    public void simulateWork(Handler handler, List<Runnable> runnables) {
-        for(Runnable r : runnables) {
+    public void simulateWork(List<Task> tasks) {
+        for(Task t : tasks) {
             Bundle b = new Bundle();
-            b.putString("id", "task" + runnables.indexOf(r));
-            Message msg = Message.obtain(handler, r);
+            b.putSerializable("task", t);
+            b.putString("id", "task" + tasks.indexOf(t));
+            Message msg = new Message();
             msg.setData(b);
             msg.what = ThreadedService.DO_WORK;
 
             try {
                 _messenger.send(msg);
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 _msgQueueList.add(msg);
             }
         }

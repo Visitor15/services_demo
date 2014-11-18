@@ -51,13 +51,14 @@ public class ThreadedService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     private void handleServiceMessage(Message msg) {
         switch(msg.what) {
             case DO_WORK: {
-                simulateBackgroundWork(Message.obtain(msg));
+                spawnWorkerThread().sendMessage(Message.obtain(msg));
+
                 break;
             }
             default: {
@@ -70,9 +71,12 @@ public class ThreadedService extends Service {
         Random random = new Random();
 
         while(true) {
-            Log.d("ThreadedService", "Running task from message: " + msg.getData().getString("id"));
+            Log.d("ThreadedService", "Thread: " + Thread.currentThread().getName() + " running task from message: " + msg.getData().getString("id"));
+
+            ((Task) msg.getData().getSerializable("task")).executeTask();
+
             try {
-                Thread.sleep(random.nextInt(1999) + 1);
+                Thread.sleep(random.nextInt(2999) + 1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -80,7 +84,15 @@ public class ThreadedService extends Service {
     }
 
     private void handleWorkerMessage(Message msg) {
+        switch(msg.what) {
+            case DO_WORK: {
+                simulateBackgroundWork(Message.obtain(msg));
+                break;
+            }
+            default: {
 
+            }
+        }
     }
 
     private void postToMainThread(Message msg) {
@@ -88,7 +100,8 @@ public class ThreadedService extends Service {
     }
 
     private Handler spawnWorkerThread() {
-        HandlerThread thread = new HandlerThread("ThreadedServiceWorker", android.os.Process.THREAD_PRIORITY_BACKGROUND);
+        Random ran = new Random();
+        HandlerThread thread = new HandlerThread("ThreadedServiceWorker" + ran.nextInt(100) + 1, android.os.Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
         return new ServiceWorkerHandler(thread.getLooper());
     }

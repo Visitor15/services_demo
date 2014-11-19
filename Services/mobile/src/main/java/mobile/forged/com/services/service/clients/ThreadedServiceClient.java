@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,43 +20,52 @@ import mobile.forged.com.services.service.ThreadedService;
 /**
  * Created by visitor15 on 11/17/14.
  */
-public class ThreadedServiceClient implements ServiceConnection {
+public class ThreadedServiceClient implements Serializable{
 
-    private Messenger _messenger;
+    private transient Messenger _messenger;
 
     private boolean _isBound;
 
-    private List<Message> _msgQueueList;
+    private transient List<Message> _msgQueueList;
+
+    private transient ServiceConnection _serviceConnection;
 
     public ThreadedServiceClient() {
         _msgQueueList = new ArrayList<Message>();
-        initializeService(ThreadedService.class, this);
+        initializeService(ThreadedService.class);
     }
 
-    protected void initializeService(Class c, ServiceConnection serviceConnection) {
+    protected void initializeService(Class c) {
+
         ServicesDemo.getReference().bindService(new Intent(ServicesDemo.getReference(),
                         c),
-                serviceConnection,
+                createServiceConnection(),
                 Context.BIND_AUTO_CREATE);
     }
 
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        _isBound = true;
-        _messenger = new Messenger(service);
+    private ServiceConnection createServiceConnection() {
+        _serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                _isBound = true;
+                _messenger = new Messenger(service);
 
-        for(Message msg : _msgQueueList) {
-            try {
-                _messenger.send(msg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
+//                for(Message msg : _msgQueueList) {
+//                    try {
+//                        _messenger.send(msg);
+//                    } catch (RemoteException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
-        }
-    }
 
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        _isBound = false;
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                _isBound = false;
+            }
+        };
+
+        return _serviceConnection;
     }
 
     public void simulateWork(List<Task> tasks) {

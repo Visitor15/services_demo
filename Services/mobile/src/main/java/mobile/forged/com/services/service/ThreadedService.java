@@ -3,6 +3,7 @@ package mobile.forged.com.services.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -10,6 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.Process;
+import android.os.RemoteException;
 import android.util.Log;
 
 import java.util.Random;
@@ -20,6 +22,8 @@ import java.util.Random;
 public class ThreadedService extends Service {
 
     public static final int DO_WORK = 100;
+
+    public static final int SYNC_BACKGROUND = 200;
 
     private Messenger _messenger;
 
@@ -58,14 +62,139 @@ public class ThreadedService extends Service {
         switch(msg.what) {
             case DO_WORK: {
                 spawnWorkerThread().sendMessage(Message.obtain(msg));
-
                 break;
+            }
+            case SYNC_BACKGROUND: {
+                spawnWorkerThread().sendMessage(Message.obtain(msg));
             }
             default: {
 
             }
         }
     }
+
+    private void syncBackgroundTask(Message msg) {
+        Bundle b = new Bundle();
+
+        Random random = new Random();
+        int num = 0;
+        while(true) {
+            b = new Bundle();
+            num = random.nextInt(5);
+            switch(num) {
+                case 0: {
+                    b.putInt("background_color", android.R.color.black);
+                    break;
+                }
+                case 1: {
+                    b.putInt("background_color", android.R.color.holo_purple);
+                    break;
+                }
+                case 2: {
+                    b.putInt("background_color", android.R.color.holo_red_dark);
+                    break;
+                }
+                case 3: {
+                    b.putInt("background_color", android.R.color.holo_blue_bright);
+                    break;
+                }
+                case 4: {
+                    b.putInt("background_color", android.R.color.holo_green_light);
+                    break;
+                }
+            }
+
+            Message replyMsg = Message.obtain();
+            replyMsg.setData(b);
+            try {
+                msg.what = 200;
+                Log.d("ThreadedService", "REPLYING TO REQUESTER!");
+//                msg.getTarget().sendMessage(replyMsg);
+                msg.replyTo.send(replyMsg);
+                Thread.sleep(3000);
+            }catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+//    private List<Task> createSyncBackgroundTask() {
+//        List<Task> tasks = new ArrayList<Task>();
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
+//                _handler.post(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+////                        findViewById(R.id.main).setBackgroundResource(android.R.color.black);
+//                    }
+//                });
+//            }
+//        });
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "All you base are belong to us.");
+//                _handler.post(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+////                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_red_dark);
+//                    }
+//                });
+//            }
+//        });
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "Here I am!");
+//                _handler.post(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+////                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_blue_bright);
+//                    }
+//                });
+//            }
+//        });
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "Where is the normal?");
+//                _handler.post(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+////                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_purple);
+//                    }
+//                });
+//            }
+//        });
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
+//                _handler.post(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+////                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_green_light);
+//                    }
+//                });
+//            }
+//        });
+//
+//        return tasks;
+//    }
 
     private void simulateBackgroundWork(Message msg) {
         Random random = new Random();
@@ -86,7 +215,13 @@ public class ThreadedService extends Service {
     private void handleWorkerMessage(Message msg) {
         switch(msg.what) {
             case DO_WORK: {
+                Log.d("ThreadedService", "SIMULATING WORK!");
                 simulateBackgroundWork(Message.obtain(msg));
+                break;
+            }
+            case SYNC_BACKGROUND: {
+                Log.d("ThreadedService", "SYNCING BACKGROUNDS!");
+                syncBackgroundTask(Message.obtain(msg));
                 break;
             }
             default: {

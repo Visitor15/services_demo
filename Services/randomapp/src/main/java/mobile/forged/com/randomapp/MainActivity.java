@@ -1,11 +1,9 @@
 package mobile.forged.com.randomapp;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
@@ -13,37 +11,130 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import mobile.forged.com.randomapp.clients.ThreadedServiceClient;
+
 
 public class MainActivity extends Activity {
+
+    private Messenger _messenger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent i = new Intent();
-        i.setAction("com.forged.action.threadedservice");
-        i.setComponent(new ComponentName("mobile.forged.com.services.service.ThreadedService", "mobile.forged.com.services.service.ThreadedService"));
-        ComponentName c = startService(i);
 
-        bindService(i, new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                Message msg = Message.obtain();
-                msg.what = 100;
-                Messenger messenger = new Messenger(service);
-                try {
-                    messenger.send(msg);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            }
 
+//        Intent i = new Intent("com.forged.action.threadedservice");
+//        bindService(i, new ServiceConnection() {
+//            @Override
+//            public void onServiceConnected(ComponentName name, IBinder service) {
+//                Message msg = Message.obtain();
+//                msg.what = 100;
+//                _messenger = new Messenger(service);
+//                try {
+//                    _messenger.send(msg);
+//                } catch (RemoteException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onServiceDisconnected(ComponentName name) {
+//                Log.d("TAG", "Did not work.");
+//            }
+//        }, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        try {
+            simulateWork();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void simulateWork() throws RemoteException {
+        ThreadedServiceClient threadedServiceClient = new ThreadedServiceClient(this);
+
+        List<Task> tasks = new ArrayList<Task>();
+
+        tasks.add(new Task() {
             @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Log.d("TAG", "Did not work.");
+            public void executeTask() {
+                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
+                MainActivity.this.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        findViewById(R.id.main).setBackgroundResource(android.R.color.black);
+                    }
+                });
             }
-        }, 0);
+        });
+
+        tasks.add(new Task() {
+            @Override
+            public void executeTask() {
+                Log.d("MainActivity", "All you base are belong to us.");
+                MainActivity.this.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_red_dark);
+                    }
+                });
+            }
+        });
+
+        tasks.add(new Task() {
+            @Override
+            public void executeTask() {
+                Log.d("MainActivity", "Here I am!");
+                MainActivity.this.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_blue_bright);
+                    }
+                });
+            }
+        });
+
+        tasks.add(new Task() {
+            @Override
+            public void executeTask() {
+                Log.d("MainActivity", "Where is the normal?");
+                MainActivity.this.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_purple);
+                    }
+                });
+            }
+        });
+
+        tasks.add(new Task() {
+            @Override
+            public void executeTask() {
+                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
+                MainActivity.this.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_green_light);
+                    }
+                });
+            }
+        });
+//        threadedServiceClient.simulateWork(tasks);
     }
 
 
@@ -67,5 +158,34 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void handleServiceMessage(Message msg) {
+        switch(msg.what) {
+            case 200: {
+
+                break;
+            }
+            default: {
+                Log.d("RandomApp", "Got response from remote service.");
+            }
+        }
+    }
+
+    /*
+    * CLASS
+    */
+    protected class ServiceHandler extends Handler {
+
+        protected ServiceHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            synchronized (this) {
+                handleServiceMessage(msg);
+            }
+        }
     }
 }

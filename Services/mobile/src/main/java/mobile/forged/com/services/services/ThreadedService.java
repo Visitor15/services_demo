@@ -1,4 +1,4 @@
-package mobile.forged.com.services.service;
+package mobile.forged.com.services.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -120,101 +120,8 @@ public class ThreadedService extends Service {
         }
     }
 
-//    private List<Task> createSyncBackgroundTask() {
-//        List<Task> tasks = new ArrayList<Task>();
-//
-//        tasks.add(new Task() {
-//            @Override
-//            public void executeTask() {
-//                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
-//                _handler.post(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-////                        findViewById(R.id.main).setBackgroundResource(android.R.color.black);
-//                    }
-//                });
-//            }
-//        });
-//
-//        tasks.add(new Task() {
-//            @Override
-//            public void executeTask() {
-//                Log.d("MainActivity", "All you base are belong to us.");
-//                _handler.post(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-////                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_red_dark);
-//                    }
-//                });
-//            }
-//        });
-//
-//        tasks.add(new Task() {
-//            @Override
-//            public void executeTask() {
-//                Log.d("MainActivity", "Here I am!");
-//                _handler.post(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-////                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_blue_bright);
-//                    }
-//                });
-//            }
-//        });
-//
-//        tasks.add(new Task() {
-//            @Override
-//            public void executeTask() {
-//                Log.d("MainActivity", "Where is the normal?");
-//                _handler.post(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-////                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_purple);
-//                    }
-//                });
-//            }
-//        });
-//
-//        tasks.add(new Task() {
-//            @Override
-//            public void executeTask() {
-//                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
-//                _handler.post(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-////                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_green_light);
-//                    }
-//                });
-//            }
-//        });
-//
-//        return tasks;
-//    }
-
     private void simulateBackgroundWork(Message msg) {
-
         ((Task) msg.getData().getSerializable("task")).executeTask();
-
-
-
-//        Random random = new Random();
-//
-//        while(true) {
-//            Log.d("ThreadedService", "Thread: " + Thread.currentThread().getName() + " running task from message: " + msg.getData().getString("id"));
-//
-//            ((Task) msg.getData().getSerializable("task")).executeTask();
-//
-//            try {
-//                Thread.sleep(random.nextInt(2999) + 1);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     private void handleWorkerMessage(Message msg) {

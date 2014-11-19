@@ -47,7 +47,7 @@ public class ThreadedServiceClient {
     protected void initializeService() {
         _remoteServiceHandler = new RemoteServiceHandler(Looper.getMainLooper());
         _replyMessenger = new Messenger(_remoteServiceHandler);
-        Intent _intent = new Intent("com.forged.action.threadedservice");
+        Intent _intent = new Intent("com.forged.action.external_threaded_service");
         RandomApp.getReference().bindService(
                 _intent,
                 createServiceConnection(),

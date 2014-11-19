@@ -1,4 +1,4 @@
-package mobile.forged.com.services.service.clients;
+package mobile.forged.com.services.services.clients;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,18 +9,17 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import mobile.forged.com.services.ServicesDemo;
-import mobile.forged.com.services.service.Task;
-import mobile.forged.com.services.service.ThreadedService;
+import mobile.forged.com.services.services.Task;
+import mobile.forged.com.services.services.ThreadedService;
 
 /**
  * Created by visitor15 on 11/17/14.
  */
-public class ThreadedServiceClient implements Serializable{
+public class ThreadedServiceClient {
 
     private transient Messenger _messenger;
 

@@ -1,4 +1,4 @@
-package mobile.forged.com.services.service.clients;
+package mobile.forged.com.services.services.clients;
 
 import java.io.Serializable;
 

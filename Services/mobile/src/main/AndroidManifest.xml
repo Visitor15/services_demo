@@ -19,11 +19,24 @@
         </activity>
 
         <service
-            android:name=".service.ThreadedService"
+            android:name=".services.ThreadedService"
             android:enabled="true"
             android:exported="true" >
             <intent-filter>
-                <action android:name="com.forged.action.threadedservice" />
+                <action android:name="com.forged.action.threaded_service" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.ExternalThreadedService"
+            android:enabled="true"
+            android:exported="true"
+            android:process="external_threaded_service">
+            <intent-filter>
+                <action android:name="com.forged.action.externa_threaded_service" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 

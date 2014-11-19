@@ -20,7 +20,6 @@
 
         <service
             android:name=".service.ThreadedService"
-            android:process=":my_process"
             android:enabled="true"
             android:exported="true" >
             <intent-filter>

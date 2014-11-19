@@ -9,17 +9,23 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import mobile.forged.com.services.service.Task;
+import mobile.forged.com.services.service.clients.SimpleClientCallback;
 import mobile.forged.com.services.service.clients.ThreadedServiceClient;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SimpleClientCallback {
+
+    private ThreadedServiceClient threadedServiceClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        threadedServiceClient = new ThreadedServiceClient(this);
     }
 
 
@@ -49,15 +55,21 @@ public class MainActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        try {
-            simulateWork();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            simulateWork();
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
+
+
+    }
+
+    public void doTask(Task t) {
+        threadedServiceClient.doTask(t);
     }
 
     public void simulateWork() throws RemoteException {
-        ThreadedServiceClient threadedServiceClient = new ThreadedServiceClient();
+
 
         List<Task> tasks = new ArrayList<Task>();
 
@@ -134,4 +146,70 @@ public class MainActivity extends Activity {
     }
 
 
+    @Override
+    public void onServiceConnected() {
+        doTask(new Task() {
+            @Override
+            public void executeTask() {
+                Random random = new Random();
+                int num = 0;
+                while(true) {
+                    num = random.nextInt(5);
+                    switch (num) {
+                        case 0: {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findViewById(R.id.main).setBackgroundResource(android.R.color.black);
+                                }
+                            });
+                            break;
+                        }
+                        case 1: {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findViewById(R.id.main).setBackgroundResource(android.R.color.holo_blue_bright);
+                                }
+                            });
+                            break;
+                        }
+                        case 2: {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findViewById(R.id.main).setBackgroundResource(android.R.color.holo_orange_dark);
+                                }
+                            });
+                            break;
+                        }
+                        case 3: {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findViewById(R.id.main).setBackgroundResource(android.R.color.holo_purple);
+                                }
+                            });
+                            break;
+                        }
+                        case 4: {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findViewById(R.id.main).setBackgroundResource(android.R.color.holo_green_light);
+                                }
+                            });
+                            break;
+                        }
+                    }
+
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
 }

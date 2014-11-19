@@ -30,7 +30,10 @@ public class ThreadedServiceClient implements Serializable{
 
     private transient ServiceConnection _serviceConnection;
 
-    public ThreadedServiceClient() {
+    private transient SimpleClientCallback _callback;
+
+    public ThreadedServiceClient(SimpleClientCallback callback) {
+        _callback = callback;
         _msgQueueList = new ArrayList<Message>();
         initializeService(ThreadedService.class);
     }
@@ -49,14 +52,7 @@ public class ThreadedServiceClient implements Serializable{
             public void onServiceConnected(ComponentName name, IBinder service) {
                 _isBound = true;
                 _messenger = new Messenger(service);
-
-//                for(Message msg : _msgQueueList) {
-//                    try {
-//                        _messenger.send(msg);
-//                    } catch (RemoteException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
+                _callback.onServiceConnected();
             }
 
             @Override
@@ -82,6 +78,21 @@ public class ThreadedServiceClient implements Serializable{
             } catch (Exception e) {
                 _msgQueueList.add(msg);
             }
+        }
+    }
+
+    public void doTask(Task t) {
+        Bundle b = new Bundle();
+        b.putSerializable("task", t);
+        b.putString("id", "task");
+        Message msg = new Message();
+        msg.setData(b);
+        msg.what = ThreadedService.DO_WORK;
+
+        try {
+            _messenger.send(msg);
+        } catch (Exception e) {
+            _msgQueueList.add(msg);
         }
     }
 }

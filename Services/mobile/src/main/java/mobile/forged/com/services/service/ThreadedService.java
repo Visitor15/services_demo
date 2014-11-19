@@ -108,7 +108,7 @@ public class ThreadedService extends Service {
             replyMsg.setData(b);
             try {
                 msg.what = 200;
-                Log.d("ThreadedService", "REPLYING TO REQUESTER!");
+//                Log.d("ThreadedService", "REPLYING TO REQUESTER!");
 //                msg.getTarget().sendMessage(replyMsg);
                 msg.replyTo.send(replyMsg);
                 Thread.sleep(3000);
@@ -197,19 +197,24 @@ public class ThreadedService extends Service {
 //    }
 
     private void simulateBackgroundWork(Message msg) {
-        Random random = new Random();
 
-        while(true) {
-            Log.d("ThreadedService", "Thread: " + Thread.currentThread().getName() + " running task from message: " + msg.getData().getString("id"));
+        ((Task) msg.getData().getSerializable("task")).executeTask();
 
-            ((Task) msg.getData().getSerializable("task")).executeTask();
 
-            try {
-                Thread.sleep(random.nextInt(2999) + 1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+
+//        Random random = new Random();
+//
+//        while(true) {
+//            Log.d("ThreadedService", "Thread: " + Thread.currentThread().getName() + " running task from message: " + msg.getData().getString("id"));
+//
+//            ((Task) msg.getData().getSerializable("task")).executeTask();
+//
+//            try {
+//                Thread.sleep(random.nextInt(2999) + 1);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private void handleWorkerMessage(Message msg) {

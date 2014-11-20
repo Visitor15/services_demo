@@ -1,4 +1,6 @@
-package mobile.forged.com.services.services.clients;
+package mobile.forged.com.app.services.clients;
+
+import android.os.Message;
 
 import java.io.Serializable;
 
@@ -7,4 +9,6 @@ import java.io.Serializable;
  */
 public interface  SimpleClientCallback extends Serializable {
     public void onServiceConnected();
+
+    public void handleServiceMessage(Message msg);
 }

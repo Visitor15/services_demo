@@ -1,8 +1,16 @@
-package mobile.forged.com.services.services;
+package mobile.forged.com.app.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.*;
+import android.os.Binder;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.util.Log;
 
 import java.util.Random;
@@ -10,7 +18,7 @@ import java.util.Random;
 /**
  * Created by nchampagne on 11/19/14.
  */
-public class ExternalThreadedService extends Service {
+public class LocalService extends Service {
     public static final int DO_WORK = 100;
 
     public static final int SYNC_BACKGROUND = 200;
@@ -138,7 +146,7 @@ public class ExternalThreadedService extends Service {
 
     private Handler spawnWorkerThread() {
         Random ran = new Random();
-        HandlerThread thread = new HandlerThread("ThreadedServiceWorker" + ran.nextInt(100) + 1, android.os.Process.THREAD_PRIORITY_BACKGROUND);
+        HandlerThread thread = new HandlerThread("LocalServiceWorker" + ran.nextInt(100) + 1, android.os.Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
         return new ServiceWorkerHandler(thread.getLooper());
     }
@@ -150,8 +158,8 @@ public class ExternalThreadedService extends Service {
         /*
          * Returns an instance of the current service.
          */
-        public ExternalThreadedService getService() {
-            return ExternalThreadedService.this;
+        public LocalService getService() {
+            return LocalService.this;
         }
     }
 

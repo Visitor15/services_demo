@@ -1,4 +1,4 @@
-package mobile.forged.com.services;
+package mobile.forged.com.app;
 
 import android.app.Activity;
 import android.os.Bundle;

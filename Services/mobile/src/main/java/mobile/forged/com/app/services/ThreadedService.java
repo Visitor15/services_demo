@@ -1,4 +1,4 @@
-package mobile.forged.com.services.services;
+package mobile.forged.com.app.services;
 
 import android.app.Service;
 import android.content.Intent;

@@ -1,26 +1,29 @@
-package mobile.forged.com.services.services.clients;
+package mobile.forged.com.app.services.clients;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.RemoteException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import mobile.forged.com.services.ServicesDemo;
-import mobile.forged.com.services.services.Task;
-import mobile.forged.com.services.services.ThreadedService;
+import mobile.forged.com.app.ServicesDemo;
+import mobile.forged.com.app.services.RemoteService;
+import mobile.forged.com.app.services.Task;
+import mobile.forged.com.app.services.ThreadedService;
 
 /**
- * Created by visitor15 on 11/17/14.
+ * Created by nchampagne on 11/19/14.
  */
-public class ThreadedServiceClient {
-
+public class RemoteServiceClient {
     private transient Messenger _messenger;
 
     private boolean _isBound;
@@ -31,14 +34,16 @@ public class ThreadedServiceClient {
 
     private transient SimpleClientCallback _callback;
 
-    public ThreadedServiceClient(SimpleClientCallback callback) {
+    private Messenger responseMessenger;
+
+    public RemoteServiceClient(SimpleClientCallback callback) {
         _callback = callback;
         _msgQueueList = new ArrayList<Message>();
-        initializeService(ThreadedService.class);
+        initializeService(RemoteService.class);
     }
 
     protected void initializeService(Class c) {
-
+        responseMessenger = new Messenger(new ServiceHandler(Looper.myLooper()));
         ServicesDemo.getReference().bindService(new Intent(ServicesDemo.getReference(),
                         c),
                 createServiceConnection(),
@@ -92,6 +97,47 @@ public class ThreadedServiceClient {
             _messenger.send(msg);
         } catch (Exception e) {
             _msgQueueList.add(msg);
+        }
+    }
+
+    public void calculatePi() {
+        Message msg = Message.obtain();
+        msg.what = RemoteService.CALCULATE_PI;
+        msg.replyTo = responseMessenger;
+
+        try {
+            _messenger.send(msg);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void printFibonacciSequence() {
+        Message msg = Message.obtain();
+        msg.what = RemoteService.FIBONACCI_NUMBER;
+        msg.replyTo = responseMessenger;
+
+        try {
+            _messenger.send(msg);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    * CLASS
+    */
+    protected class ServiceHandler extends Handler {
+
+        protected ServiceHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            synchronized (this) {
+                _callback.handleServiceMessage(Message.obtain(msg));
+            }
         }
     }
 }

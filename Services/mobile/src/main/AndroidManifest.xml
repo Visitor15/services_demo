@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="mobile.forged.com.services" >
+    package="mobile.forged.com.app" >
+
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".ServicesDemo"
+        android:name="mobile.forged.com.app.ServicesDemo"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="mobile.forged.com.services.MainActivity"
+            android:name="mobile.forged.com.app.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,12 +33,24 @@
         </service>
 
         <service
-            android:name=".services.ExternalThreadedService"
+            android:name=".services.LocalService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.forged.action.local_service" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.RemoteService"
             android:enabled="true"
             android:exported="true"
-            android:process="external_threaded_service">
+            android:process=":remote_service_process" >
             <intent-filter>
-                <action android:name="com.forged.action.externa_threaded_service" />
+                <action android:name="com.forged.action.remote_service" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 

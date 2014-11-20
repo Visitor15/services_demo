@@ -21,18 +21,6 @@
         </activity>
 
         <service
-            android:name=".services.ThreadedService"
-            android:enabled="true"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="com.forged.action.threaded_service" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-            </intent-filter>
-        </service>
-
-        <service
             android:name=".services.LocalService"
             android:enabled="true"
             android:exported="true" >

@@ -7,15 +7,15 @@ import android.app.Application;
  */
 public class ServicesDemo extends Application {
 
-    private static ServicesDemo _singleton;
+    private static ServicesDemo singleton;
 
     @Override
     public void onCreate() {
-        ServicesDemo._singleton = this;
+        ServicesDemo.singleton = this;
         super.onCreate();
     }
 
     public static ServicesDemo getReference() {
-        return ServicesDemo._singleton;
+        return ServicesDemo.singleton;
     }
 }

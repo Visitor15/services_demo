@@ -43,6 +43,7 @@ public class LocalServiceFragment extends Fragment implements SimpleClientCallba
 
         mButton = (Button) mRootView.findViewById(R.id.button);
         mRelativeLayout = (RelativeLayout) mRootView.findViewById(R.id.container);
+        mRootView.findViewById(R.id.textView).setVisibility(View.GONE);
 
         initButtonListener();
 

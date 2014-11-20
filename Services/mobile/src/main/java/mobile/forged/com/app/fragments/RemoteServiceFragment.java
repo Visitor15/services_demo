@@ -50,7 +50,7 @@ public class RemoteServiceFragment extends Fragment implements SimpleClientCallb
             @Override
             public void onClick(View v) {
                 if(isBound) {
-                    remoteServiceClient.calculatePi();
+                    remoteServiceClient.printFibonacciSequence();
                 }
                 else {
                     Toast.makeText(getActivity(), "Service not connected.", Toast.LENGTH_LONG).show();

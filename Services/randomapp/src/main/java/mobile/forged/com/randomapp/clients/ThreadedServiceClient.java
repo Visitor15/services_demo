@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class ThreadedServiceClient {
     protected void initializeService() {
         _remoteServiceHandler = new RemoteServiceHandler(Looper.getMainLooper());
         _replyMessenger = new Messenger(_remoteServiceHandler);
-        Intent _intent = new Intent("com.forged.action.external_threaded_service");
+        Intent _intent = new Intent("com.forged.action.remote_service");
         RandomApp.getReference().bindService(
                 _intent,
                 createServiceConnection(),
@@ -100,9 +101,7 @@ public class ThreadedServiceClient {
     }
 
     private void handleRemoteResponse(Message msg) {
-        /* Probably just broadcast here. */
-
-        _activity.findViewById(R.id.main).setBackgroundResource(msg.getData().getInt("background_color"));
+        ((TextView) _activity.findViewById(R.id.textView)).setText(msg.getData().getString("fibonacci_number"));
     }
 
     private class RemoteServiceHandler extends Handler {

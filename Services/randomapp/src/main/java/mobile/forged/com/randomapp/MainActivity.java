@@ -6,13 +6,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import mobile.forged.com.randomapp.clients.ThreadedServiceClient;
 
@@ -27,6 +23,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
 
+        ThreadedServiceClient threadedServiceClient = new ThreadedServiceClient(this);
 
 //        Intent i = new Intent("com.forged.action.threadedservice");
 //        bindService(i, new ServiceConnection() {
@@ -53,89 +50,89 @@ public class MainActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        try {
-            simulateWork();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            simulateWork();
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
     }
 
-    public void simulateWork() throws RemoteException {
-        ThreadedServiceClient threadedServiceClient = new ThreadedServiceClient(this);
-
-        List<Task> tasks = new ArrayList<Task>();
-
-        tasks.add(new Task() {
-            @Override
-            public void executeTask() {
-                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
-                MainActivity.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        findViewById(R.id.main).setBackgroundResource(android.R.color.black);
-                    }
-                });
-            }
-        });
-
-        tasks.add(new Task() {
-            @Override
-            public void executeTask() {
-                Log.d("MainActivity", "All you base are belong to us.");
-                MainActivity.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_red_dark);
-                    }
-                });
-            }
-        });
-
-        tasks.add(new Task() {
-            @Override
-            public void executeTask() {
-                Log.d("MainActivity", "Here I am!");
-                MainActivity.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_blue_bright);
-                    }
-                });
-            }
-        });
-
-        tasks.add(new Task() {
-            @Override
-            public void executeTask() {
-                Log.d("MainActivity", "Where is the normal?");
-                MainActivity.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_purple);
-                    }
-                });
-            }
-        });
-
-        tasks.add(new Task() {
-            @Override
-            public void executeTask() {
-                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
-                MainActivity.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_green_light);
-                    }
-                });
-            }
-        });
-//        threadedServiceClient.simulateWork(tasks);
-    }
+//    public void simulateWork() throws RemoteException {
+//        ThreadedServiceClient threadedServiceClient = new ThreadedServiceClient(this);
+//
+//        List<Task> tasks = new ArrayList<Task>();
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
+//                MainActivity.this.runOnUiThread(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        findViewById(R.id.main).setBackgroundResource(android.R.color.black);
+//                    }
+//                });
+//            }
+//        });
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "All you base are belong to us.");
+//                MainActivity.this.runOnUiThread(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_red_dark);
+//                    }
+//                });
+//            }
+//        });
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "Here I am!");
+//                MainActivity.this.runOnUiThread(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_blue_bright);
+//                    }
+//                });
+//            }
+//        });
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "Where is the normal?");
+//                MainActivity.this.runOnUiThread(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_purple);
+//                    }
+//                });
+//            }
+//        });
+//
+//        tasks.add(new Task() {
+//            @Override
+//            public void executeTask() {
+//                Log.d("MainActivity", "Hello, I am a task originating from MainActivity.");
+//                MainActivity.this.runOnUiThread(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        findViewById(R.id.main).setBackgroundResource(android.R.color.holo_green_light);
+//                    }
+//                });
+//            }
+//        });
+////        threadedServiceClient.simulateWork(tasks);
+//    }
 
 
     @Override

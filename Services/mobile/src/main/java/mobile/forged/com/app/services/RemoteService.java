@@ -135,10 +135,10 @@ public class RemoteService extends Service{
 
     private void printFibonacciNumbers(Message msg) {
         Bundle b;
-        for(int i=1; i<=50; i++){
+        for(int i=1; i<=20; i++){
             b = new Bundle();
             int fibNum = fibonacciRecusion(i);
-            b.putInt("fibonacci_number", fibNum);
+            b.putString("fibonacci_number", Integer.toString(fibNum));
             Message replyMsg = Message.obtain();
             replyMsg.what = FIBONACCI_NUMBER;
             replyMsg.setData(b);
@@ -149,8 +149,10 @@ public class RemoteService extends Service{
             } catch (RemoteException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
+            }
 
-
+            if(i == 20) {
+                i = 1;
             }
         }
     }
